@@ -1,8 +1,8 @@
-2# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-Created on Sun May 24 22:49:43 2015
+Spyder Editor
 
-@author: Insper
+This is a temporary script file.
 """
 
 import Leap, sys, thread, time
@@ -11,7 +11,7 @@ from Leap import CircleGesture, ScreenTapGesture, SwipeGesture, KeyTapGesture
 
 
 
-class LeapMotionListner(Leap.listener): #criação obrigatoria do listner class
+class LeapMotionListner(Leap.Listener): #criação obrigatoria do listner class
 
  # mostra qual tipo de gesto será reconhecido
  # o que será feito quando o leap motion for conectado
@@ -91,7 +91,3 @@ if __name__=='__main__':
         pass
     finally:
         controller.remove_listener(listener)
-    
-    
-        
-        

@@ -1,17 +1,23 @@
-2# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
-Created on Sun May 24 22:49:43 2015
+Created on Sun Jun 07 23:03:23 2015
 
 @author: Insper
 """
+
 
 import Leap, sys, thread, time
 #importando todos os gestos 
 from Leap import CircleGesture, ScreenTapGesture, SwipeGesture, KeyTapGesture
 
+'''
+duvidas:
+-como fazer para rodar isso igual ao video? 
+-
+'''
 
 
-class LeapMotionListner(Leap.listener): #criação obrigatoria do listner class
+class LeapMotionListner(Leap.Listener): #criação obrigatoria do listner class
 
  # mostra qual tipo de gesto será reconhecido
  # o que será feito quando o leap motion for conectado
@@ -45,28 +51,53 @@ class LeapMotionListner(Leap.listener): #criação obrigatoria do listner class
     def on_exit(self, controller):
         print 'Exited'
     
+
+
+    #parte mais importante
+
     def on_frame(self, controller):
 
         frame = controller.frame()
         
         
    
+        # imprime o numero de mãos/imprime parte do braço/ imprime cada aparição dos dedos / identifica um possivel objeto 
+
+        print "Frame ID:  " + str(frame.id) \
+            + "Timestamp: " + str(frame.timestramp) \
+            + "# of Hands"  + str(len(frame.hands)) \
+            + "# of fingers" + str(len(frame.fingers)) \
+            + "# of Tools" + str(len(frame.tools)) \
+            + "# of Gestures " + str(len(frame.gestures()))
         
-        print 'Frame ID:  ' + str(frame.id) \
-            + 'Timestamp: ' + str(frame.timestramp) \
-            + '# of Hands'  + str(len(frame.hands)) \
-            + '# of fingers' + str(len(frame.fingers)) \
-            + '# of Tools' + str(len(frame.tools)) \
-            + '# of Gestures ' + str(len(frame.gestures()))
-        
+
         
         for hand in frame.hands:
-            handType = 'Left Hand' if hand.is_left else 'Right Hand'
             
-            print handtype + 'Hand ID:' + str(hand.id) + 'Palm Position: ' + str
-        
-        print 'Frame ID:', str(frame.id), 'Timestamp:', str(frame.timestramp)
+            handType = 'Left Hand' if hand.is_left else 'Right Hand'
+            #para cada entrada com  a mão teremos um novo ID para cada ação
+            print handType + 'Hand ID:' + str(hand.id) + 'Palm Position: ' + str(hand.palm_position)
+            
+            normal = hand.palm_normal
+            direction = hand.direction
+            #criação de parte do campo dos tres eixos - Funcao Vector - Direction Vector
+            print "Pitch: " + str(direction.pitch*Leap.RAD_TO_DEG) + "Roll: " + str(normal.roll*Leap.RAD_TO_DEG) + "Yaw: " + str(direction.yaw*Leap.RAD_TO_DEG) #tranformção em graus      
     
+
+            arm = hand.arm
+            print "Arm Direction: " + str(arm.direction) + " Wrist Position: " + str(arm.write_position) + " Elbow Position: " +str(arm.elbow_position)
+        
+
+            for finger in hand.fingers:
+                print "Type: " + self.finger_names[finger.type()] + "ID: " + str(finger.id) + " Lenght (mm): " + str(finger.lenght) + "Width (mm): " + str(finger.width)
+                
+                for b in range(0,4):
+                    # b é para pegar os ossos que quisermos 
+                    bone = finger.bone(b)
+                    print "Bone: " + self.bone_names[bone.type] + " Start: " + str(bone.prev_joint) + "End: " + str(bone.next_joint) + "Direction: " + str(bone.direction)
+                
+
+
 #------------------------------------------------------------------------------
     
 
@@ -90,7 +121,7 @@ if __name__=='__main__':
     except KeyboardInterrupt:
         pass
     finally:
-        controller.remove_listener(listener)
+        controller.remove_listener(listner)
     
     
         
