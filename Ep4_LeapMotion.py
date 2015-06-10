@@ -58,7 +58,7 @@ class LeapMotionListener(Leap.Listener):
     #parte mais importante
 
     def on_frame(self, controller):
-        frame = controller.frame()
+        frame = controller.frame() 
         
         '''print "Frame ID:  " + str(frame.id) \
             + "Timestamp: " + str(frame.timestramp) \
@@ -88,8 +88,29 @@ class LeapMotionListener(Leap.Listener):
                     bone = finger.bone(b)
                     print "Bone: " + self.bone_names[bone.type] + " Start: " + str(bone.prev_joint) + "End: " + str(bone.next_joint) + "Direction: " + str(bone.direction)'''
             
-            for tool in frame.tools:
-                print " Tool ID: " + str(tool.id) + " Tip Position: " + str(tool.tip_position) + "Direction: " + str(tool.direction)
+            '''for tool in frame.tools:
+                print " Tool ID: " + str(tool.id) + " Tip Position: " + str(tool.tip_position) + "Direction: " + str(tool.direction)'''
+
+            for gesture in frame.gestures():
+                if gesture.type == Leap.Gesture.TYPE_CIRCLE:
+                    circle= CircleGesture(gesture) # aqui o movimento circular é o de rotacionar o dedo na frente do computador
+                    
+                    if circle.pointable.direction.angle_to(circle.normal) <= Leap.PI/2:
+                        clockwiseness= "clockwise" # indica que o circulo esta em sentido horario
+                    else:
+                        clockwiseness= "counter-clockwise" #indica que o circulo esta em sentido anti
+                        #swept angle vai dizer o qual longe vc foi no circulo desde a ultimo circulo identificado
+
+           
+                    swept_angle = 0
+                    if circle.state != Leap.Gesture.STATE_START:
+                        previous=CircleGesture(controller.frame(1).gesture(circle.id)) #criando um novo frame ao escrever frame(1)
+                        swept_angle = (circle.progress - previous.progress) * 2 * Leap.PI
+                    
+                    print "ID: " + str(circle.id) + "Progres: " + str(circle.progress) + "Radius: " + str(circle.radius) + "Swept_Angle: " + str(swept_angle * Leap.RAD_TO_DEG) + " " + clockwiseness
+
+
+
 
 def main():
     
