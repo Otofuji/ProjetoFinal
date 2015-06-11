@@ -6,7 +6,7 @@ Created on Sun Jun 07 23:03:23 2015
 """
 
 
-import Leap, sys, thread, time
+import Leap, sys, thread, time, math
 #importando todos os gestos 
 from Leap import CircleGesture, ScreenTapGesture, SwipeGesture, KeyTapGesture
 
@@ -87,7 +87,8 @@ class LeapMotionListener(Leap.Listener):
                 print " Tool ID: " + str(tool.id) + " Tip Position: " + str(tool.tip_position) + "Direction: " + str(tool.direction)'''
 
             for gesture in frame.gestures():
-                #cada gesto tem seu ID criado 
+                #cada gesto tem seu ID criado
+            
                 if gesture.type == Leap.Gesture.TYPE_CIRCLE:
                     circle= CircleGesture(gesture) # aqui o movimento circular é o de rotacionar o dedo na frente do computador
                     
@@ -105,28 +106,19 @@ class LeapMotionListener(Leap.Listener):
                     # imprime no console o tamanho do circulo que voê gesticula 
                     print "ID: " + str(circle.id) + "Progres: " + str(circle.progress) + "Radius: " + str(circle.radius) + "Swept_Angle: " + str(swept_angle * Leap.RAD_TO_DEG) + " " + clockwiseness
                     
-                    '''esse gesto não esta funcionando aqui, porem no arquivo teste de swipedmove funcionou. ACredito que há necessidade que haja ifs para a logica'''
-                    if gesture.type == Leap.Gesture.TYPE_SWIPE:
-                        swipe= SwipeGesture(gesture)
-                    print "Swipe ID: " + str(swipe.id) + "State: " + self.state_names[gesture.state] + "Position: " + str(swipe.position) + "Direction: " + str(swipe.direction) + "Speed(m/s): " + str(swipe.speed)
-                    '''esse aqui ainda não testei'''
-                    if gesture.type == Leap.Gesture.TYPE_SCREEN_TAP:
-                        screentap= ScreenTapGesture(gesture)
-                        print "Screen Tap ID: " + str(gesture.id) + "State: " + self.state_names[gesture.state] + "Position: " + str(screentap.position) + "Direction: " + str(screentap.direction)
-
-
-
-
-'''
-if gesture.type == Leap.Gesture.TYPE_SCREEN_TAP:
-screentap= Screentap.Gesture(gesture)
-print "Screen Tap ID: " + str(gesture.id) + "State: " + self.state_names[gesture.state] + "Position: " + str(screentap.position) + "Direction: " + str(screentap.direction)
-if gesture.type == Leap.Gesture.TYPE_KEY_TAP:
-keytap= KeytapGesture(gesture)
-print "Key tap ID: " + str(gesture.id) + "State: " + self.state_names[gesture.state] + "Position: " + str(keytap.position) + "Direction: " + str(keytap.direction)
-'''
-
-
+                if gesture.type == Leap.Gesture.TYPE_SWIPE:
+                
+                        swipe = SwipeGesture(gesture)
+                        swipeDir = swipe.direction
+                        
+                        if (swipeDir.x > 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)):
+                            print 'Swiped right'
+                        elif(swipeDir.x < 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)):
+                            print 'Swiped left'
+                        elif(swipeDir.y > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)):
+                            print 'Swiped up'
+                        elif(swipeDir.x > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)):
+                            print 'Swiped down'
 
 
 def  main():
