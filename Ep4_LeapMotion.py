@@ -10,20 +10,16 @@ import Leap, sys, thread, time
 #importando todos os gestos 
 from Leap import CircleGesture, ScreenTapGesture, SwipeGesture, KeyTapGesture
 
-'''
-duvidas:
--como fazer para rodar isso igual ao video? 
--
-'''
-
 
 class LeapMotionListener(Leap.Listener): 
-
 #criação obrigatoria do listner class
+
 
 # mostra qual tipo de gesto será reconhecido
 # o que será feito quando o leap motion for conectado
 # o que será feito quando o leap motion for desconectado
+ 
+ 
  
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky'] 
     bones_names = ['Metacarpal', 'Proximal', 'Intermidiate', 'Distal']
@@ -53,7 +49,6 @@ class LeapMotionListener(Leap.Listener):
     def on_exit(self, controller):
         print 'Exited'
     
-
 
     #parte mais importante
 
@@ -109,10 +104,19 @@ class LeapMotionListener(Leap.Listener):
                         swept_angle = (circle.progress - previous.progress) * 2 * Leap.PI
                     # imprime no console o tamanho do circulo que voê gesticula 
                     print "ID: " + str(circle.id) + "Progres: " + str(circle.progress) + "Radius: " + str(circle.radius) + "Swept_Angle: " + str(swept_angle * Leap.RAD_TO_DEG) + " " + clockwiseness
-
-                    '''if gesture.type == Leap.Gesture.TYPE_SWIPE:
+                    
+                    '''esse gesto não esta funcionando aqui, porem no arquivo teste de swipedmove funcionou. ACredito que há necessidade que haja ifs para a logica'''
+                    if gesture.type == Leap.Gesture.TYPE_SWIPE:
                         swipe= SwipeGesture(gesture)
-                    print "Swipe ID: " + str(swipe.id) + "State: " + self.state_names[gesture.state] + "Position: " + str(swipe.position) + "Direction: " + str(swipe.direction) + "Speed(m/s): " + str(swipe.speed)'''
+                    print "Swipe ID: " + str(swipe.id) + "State: " + self.state_names[gesture.state] + "Position: " + str(swipe.position) + "Direction: " + str(swipe.direction) + "Speed(m/s): " + str(swipe.speed)
+                    '''esse aqui ainda não testei'''
+                    if gesture.type == Leap.Gesture.TYPE_SCREEN_TAP:
+                        screentap= ScreenTapGesture(gesture)
+                        print "Screen Tap ID: " + str(gesture.id) + "State: " + self.state_names[gesture.state] + "Position: " + str(screentap.position) + "Direction: " + str(screentap.direction)
+
+
+
+
 '''
 if gesture.type == Leap.Gesture.TYPE_SCREEN_TAP:
 screentap= Screentap.Gesture(gesture)
@@ -121,6 +125,9 @@ if gesture.type == Leap.Gesture.TYPE_KEY_TAP:
 keytap= KeytapGesture(gesture)
 print "Key tap ID: " + str(gesture.id) + "State: " + self.state_names[gesture.state] + "Position: " + str(keytap.position) + "Direction: " + str(keytap.direction)
 '''
+
+
+
 
 def  main():
     
@@ -137,15 +144,8 @@ def  main():
         pass
     finally:
         controller.remove_listener(listener)
-    
-    
-    
-    
-    
 
 #------------------------------------------------------------------------------        
-        
-
         
 if __name__=='__main__':
     main()
