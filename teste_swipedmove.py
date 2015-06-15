@@ -15,7 +15,7 @@ class LeapMotionListener(Leap.Listener):
     '''Inicializando o objeto'''
 
     def on_init(self, controller):
-        print 'Initialized' # indicando que o listner foi inicializado
+        print   ('Initialized') # indicando que o listner foi inicializado
         
         
     '''criação dos métodos'''
@@ -23,15 +23,15 @@ class LeapMotionListener(Leap.Listener):
 
         
     def on_connect(self, controller):
-        print 'Motion Sensor Conected!'
+        print ('Motion Sensor Conected!')
         #criação da detecção dos gestos que serão feitos
         controller.enable_gesture(Leap.Gesture.TYPE_SWIPE);
         
     def on_diconnect(self, controller):
-        print 'Motion Sensor Disconnected'
+        print ('Motion Sensor Disconnected')
     
     def on_exit(self, controller):
-        print 'Exited'
+        print ('Exited')
     
 
 
@@ -48,13 +48,13 @@ class LeapMotionListener(Leap.Listener):
                 swipeDir = swipe.direction
                 
                 if (swipeDir.x > 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)):
-                    print 'Swiped right'
+                    print ('Swiped right')
                 elif(swipeDir.x < 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)):
-                    print 'Swiped left'
+                    print ('Swiped left')
                 elif(swipeDir.y > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)):
-                    print 'Swiped up'
+                    print ('Swiped up')
                 elif(swipeDir.x > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)):
-                    print 'Swiped down'
+                    print ('Swiped down')
                 
         
         
@@ -68,7 +68,7 @@ def  main():
         
     controller.add_listener(listener)
         
-    print 'Press enter to quit'
+    print ('Press enter to quit')
         
     try:
         sys.stdin.readline()
@@ -95,4 +95,4 @@ if __name__=='__main__':
         
         
         
-        
+            
