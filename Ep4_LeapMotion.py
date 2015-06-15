@@ -101,10 +101,11 @@ class LeapMotionListener(Leap.Listener):
            
                     swept_angle = 0
                     if circle.state != Leap.Gesture.STATE_START:
-                        previous=CircleGesture(controller.frame(1).gesture(circle.id)) #criando um novo frame ao escrever frame(1)
+                        previous = CircleGesture(controller.frame(1).gesture(circle.id)) #criando um novo frame ao escrever frame(1)
                         swept_angle = (circle.progress - previous.progress) * 2 * Leap.PI
                     # imprime no console o tamanho do circulo que voê gesticula 
-                    print "ID: " + str(circle.id) + "Progres: " + str(circle.progress) + "Radius: " + str(circle.radius) + "Swept_Angle: " + str(swept_angle * Leap.RAD_TO_DEG) + " " + clockwiseness
+                        
+                    print "Radius: " + str(circle.radius) + " " + clockwiseness
                     
                 if gesture.type == Leap.Gesture.TYPE_SWIPE:
                 
