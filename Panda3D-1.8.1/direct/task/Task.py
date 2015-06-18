@@ -15,6 +15,7 @@ import types
 import time
 import random
 import string
+import LeapMotionGestures
 
 from pandac.PandaModules import *
 
