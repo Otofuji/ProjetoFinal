@@ -6,7 +6,7 @@ __all__ = ['ShowBase', 'WindowControls']
 # that prints out every import it does in a hierarchical form
 # Annoying and very noisy, but sometimes useful
 #import VerboseImport
-
+import LeapMotionGestures
 from pandac.PandaModules import *
 
 # This needs to be available early for DirectGUI imports
