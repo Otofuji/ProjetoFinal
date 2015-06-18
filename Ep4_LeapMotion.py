@@ -5,7 +5,6 @@ Created on Sun Jun 07 23:03:23 2015
 @author: Insper
 """
 
-
 import Leap, sys, thread, time, math
 #importando todos os gestos 
 from Leap import CircleGesture, ScreenTapGesture, SwipeGesture, KeyTapGesture
