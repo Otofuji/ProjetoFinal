@@ -1,5 +1,8 @@
 #!/bin/true
 import os, sys, imp, LeapMotionGestures
+from math import pi, sin, cos
+from direct.showbase.ShowBase import ShowBase
+from direct.task import task
 
 panda3d_modules = {
     "core"        :("libpandaexpress", "libpanda"),
@@ -269,3 +272,21 @@ for mod, lib in panda3d_modules.items():
 # Important: this must be the last thing in this file
 sys.modules["panda3d"] = this
 
+class MyApp(ShowBase):
+    def __init__(self):
+        showbase.__init__(self)
+        self.environ=self.loader.loadModel("models/environment")
+        self.environreparentTo(self.render)
+        self.environ.setScale(0.25, 0.25, 0.25)
+        self.environ.setPos(-8, 42, 0)
+        self.taskMgr.add(self.spinCameraTask, "SpinCameraTask")
+
+    def spinCameraTask(self,task):
+        angleDegrees = task.time * 6.0
+        angleRadians = angleDegress * (pi/180.0)
+        self.camera.setPos(20*sin(angleRadians), -20.0 * cos(angleRadians), 3)
+        self.camera.setHpr(angleDegrees, 0, 0)
+        return Task.cont
+
+app = MyApp()
+app.run()
