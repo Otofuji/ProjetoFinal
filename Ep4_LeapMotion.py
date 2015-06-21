@@ -7,7 +7,7 @@ Created on Sun Jun 07 23:03:23 2015
 
 import Leap, sys, thread, time, math
 #importando todos os gestos 
-from Leap import CircleGesture, ScreenTapGesture, SwipeGesture, KeyTapGesture
+from Leap import CircleGesture, ScreenTapGesture, SwipeGesture, KeyTapGesture #importando a biblioteca de gestos do leap
 
 
 class LeapMotionListener(Leap.Listener): 
@@ -36,7 +36,7 @@ class LeapMotionListener(Leap.Listener):
         
     def on_connect(self, controller):
         print 'Motion Sensor Conected!'
-        #criação da detecção dos gestos que serão feitos
+        #abilitações dos possiveis gestos proprcionado pelo LeaMotion
         controller.enable_gesture(Leap.Gesture.TYPE_CIRCLE); 
         controller.enable_gesture(Leap.Gesture.TYPE_KEY_TAP);
         controller.enable_gesture(Leap.Gesture.TYPE_SCREEN_TAP);
@@ -52,7 +52,8 @@ class LeapMotionListener(Leap.Listener):
     #parte mais importante
 
     def on_frame(self, controller):
-        frame = controller.frame() 
+        frame = controller.frame() # atribuindo a variavel frame o retorno de informações dos ultimos qudros captadas pelo leap motion
+        #frame_penultimo_gesto = controller.frame(1) # atribuindo a variavel frame_penultimo_gesto o retorno de informações do penultimo gesto
         
         '''print "Frame ID:  " + str(frame.id) \
             + "Timestamp: " + str(frame.timestramp) \
@@ -89,8 +90,9 @@ class LeapMotionListener(Leap.Listener):
                 #cada gesto tem seu ID criado
             
                 if gesture.type == Leap.Gesture.TYPE_CIRCLE:
-                    circle= CircleGesture(gesture) # aqui o movimento circular é o de rotacionar o dedo na frente do computador
-                    
+                    circle= CircleGesture(gesture) 
+                    #instanciando o objeto da classe gesto
+                    # aqui o movimento circular é o de rotacionar o dedo na frente do computador
                     if circle.pointable.direction.angle_to(circle.normal) <= Leap.PI/2:
                         clockwiseness= "clockwise" # indica que o circulo esta em sentido horario
                     else:
@@ -102,20 +104,19 @@ class LeapMotionListener(Leap.Listener):
                     if circle.state != Leap.Gesture.STATE_START:
                         previous = CircleGesture(controller.frame(1).gesture(circle.id)) #criando um novo frame ao escrever frame(1)
                         swept_angle = (circle.progress - previous.progress) * 2 * Leap.PI
-                    # imprime no console o tamanho do circulo que voê gesticula 
-                        
+                    # imprime no console o tamanho do circulo que voê gesticula e o sentido horario ou anti-horario                        
                     print "Radius: " + str(circle.radius) + " " + clockwiseness
                     
                 if gesture.type == Leap.Gesture.TYPE_SWIPE:
                 
                         swipe = SwipeGesture(gesture)
                         swipeDir = swipe.direction
-                        
-                        if (swipeDir.x > 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)):
-                            print 'Swiped right'
-                        elif(swipeDir.x < 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)):
-                            print 'Swiped left'
-                        elif(swipeDir.y > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)):
+                        #criações das condições dos prints de acordo com as cordenadas estabelecidas pelo leap
+                        if (swipeDir.x > 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)): #se a posição da mão nas cordenas do leap for  x>0, o seja mão indo para a direita
+                            print 'Swiped right'#(parte do and):também precisa priorisara leitura do movimento em x para facilitar a leitura do leap
+                        elif(swipeDir.x < 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)): #se a posiçao da mão nas coodernadas do Leap  x<0, ou seja, mão indo para esquerda
+                            print 'Swiped left' #(parte do and):também precisa priorisara leitura do movimento em x para facilitar a leitura do leap 
+                        elif(swipeDir.y > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)): #se a 
                             print 'Swiped up'
                         elif(swipeDir.x > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)):
                             print 'Swiped down'
@@ -124,9 +125,9 @@ class LeapMotionListener(Leap.Listener):
 def  main():
     
     listener = LeapMotionListener() #cria o objeto
-    controller = Leap.Controller() #cria o objeto
+    controller = Leap.Controller() #cria o objeto / estabelece nossa conection com as duas duplas cameras do controlezinho
         
-    controller.add_listener(listener)
+    controller.add_listener(listener) # fazendo o controle receber os eventos criado no listener
         
     print 'Press enter to quit'
         
