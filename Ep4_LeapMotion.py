@@ -91,7 +91,7 @@ class LeapMotionListener(Leap.Listener):
             
                 if gesture.type == Leap.Gesture.TYPE_CIRCLE:
                     circle= CircleGesture(gesture) 
-                    #instanciando o objeto da classe gesto
+                    #instanciando o objeto da classe gesto circulo
                     # aqui o movimento circular é o de rotacionar o dedo na frente do computador
                     if circle.pointable.direction.angle_to(circle.normal) <= Leap.PI/2:
                         clockwiseness= "clockwise" # indica que o circulo esta em sentido horario
@@ -108,18 +108,19 @@ class LeapMotionListener(Leap.Listener):
                     print "Radius: " + str(circle.radius) + " " + clockwiseness
                     
                 if gesture.type == Leap.Gesture.TYPE_SWIPE:
-                
+                        #instanciando o objeto da classe gesto swipe
                         swipe = SwipeGesture(gesture)
+                        #instnciando o objet da classe gesto da direção do swipe
                         swipeDir = swipe.direction
                         #criações das condições dos prints de acordo com as cordenadas estabelecidas pelo leap
                         if (swipeDir.x > 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)): #se a posição da mão nas cordenas do leap for  x>0, o seja mão indo para a direita
-                            print 'Swiped right'#(parte do and):também precisa priorisara leitura do movimento em x para facilitar a leitura do leap
+                            print 'Swiped right'     #(parte do and):também precisa priorisara leitura do movimento em x para facilitar a leitura do leap
                         elif(swipeDir.x < 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)): #se a posiçao da mão nas coodernadas do Leap  x<0, ou seja, mão indo para esquerda
-                            print 'Swiped left' #(parte do and):também precisa priorisara leitura do movimento em x para facilitar a leitura do leap 
-                        elif(swipeDir.y > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)): #se a 
-                            print 'Swiped up'
-                        elif(swipeDir.x > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)):
-                            print 'Swiped down'
+                            print 'Swiped left'       #(parte do and):também precisa priorisara leitura do movimento em x para facilitar a leitura do leap 
+                        elif(swipeDir.y > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)): #se a posiçao da mão nas coodernadas do Leap  y>0, ou seja, mão indo para cima
+                            print 'Swiped up'        #(parte do and):também precisa priorisara leitura do movimento em y para facilitar a leitura do leap 
+                        elif(swipeDir.x > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)): #se a posiçao da mão nas coodernadas do Leap  x<0, ou seja, mão indo para baixo
+                            print 'Swiped down'      #(parte do and):também precisa priorisara leitura do movimento em y para facilitar a leitura do leap 
 
 
 def  main():
