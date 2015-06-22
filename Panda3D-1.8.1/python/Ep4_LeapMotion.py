@@ -5,10 +5,9 @@ Created on Sun Jun 07 23:03:23 2015
 @author: Insper
 """
 
-import Leap, sys, thread, time, math # importando a biblioteca do leap
+import Leap, sys, thread, time, math
+#importando todos os gestos 
 from Leap import CircleGesture, ScreenTapGesture, SwipeGesture, KeyTapGesture #importando a biblioteca de gestos do leap
-import turtle # Usa a biblioteca de turtle graphics
-
 
 
 class LeapMotionListener(Leap.Listener): 
@@ -89,6 +88,7 @@ class LeapMotionListener(Leap.Listener):
 
             for gesture in frame.gestures():
                 #cada gesto tem seu ID criado
+            
                 if gesture.type == Leap.Gesture.TYPE_CIRCLE:
                     circle= CircleGesture(gesture) 
                     #instanciando o objeto da classe gesto circulo
@@ -104,12 +104,7 @@ class LeapMotionListener(Leap.Listener):
                     if circle.state != Leap.Gesture.STATE_START:
                         previous = CircleGesture(controller.frame(1).gesture(circle.id)) #criando um novo frame ao escrever frame(1)
                         swept_angle = (circle.progress - previous.progress) * 2 * Leap.PI
-                    # imprime no console o tamanho do circulo que voê gesticula e o sentido horario ou anti-horario 
-                    caneta = turtle.Turtle()
-                    caneta.penup()
-                    caneta.setpos(0,-100)
-                    caneta.pendown()
-                    caneta.circle(circle.radius)
+                    # imprime no console o tamanho do circulo que voê gesticula e o sentido horario ou anti-horario                        
                     print "Radius: " + str(circle.radius) + " " + clockwiseness
                     
                 if gesture.type == Leap.Gesture.TYPE_SWIPE:
@@ -130,11 +125,9 @@ class LeapMotionListener(Leap.Listener):
 
 def  main():
     
-    window = turtle.Screen()
-    window.bgcolor("white")
-    window.title("Criador de Circulos")
     listener = LeapMotionListener() #cria o objeto
-    controller = Leap.Controller() #cria o objeto / estabelece nossa conection com as duas duplas cameras do controlezinho    
+    controller = Leap.Controller() #cria o objeto / estabelece nossa conection com as duas duplas cameras do controlezinho
+        
     controller.add_listener(listener) # fazendo o controle receber os eventos criado no listener
         
     print 'Press enter to quit'

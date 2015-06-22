@@ -1,14 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sun Jun 07 23:03:23 2015
+Created on Mon Jun 15 09:21:19 2015
 
 @author: Insper
 """
 
-import Leap, sys, thread, time, math # importando a biblioteca do leap
-from Leap import CircleGesture, ScreenTapGesture, SwipeGesture, KeyTapGesture #importando a biblioteca de gestos do leap
-import turtle # Usa a biblioteca de turtle graphics
-
+from math import pi, sin, cos
+ 
+from direct.showbase.ShowBase import ShowBase
+from direct.task import Task
+from direct.actor.Actor import Actor
+from direct.interval.IntervalGlobal import Sequence
+from panda3d.core import Point3
+ 
+import Leap, sys, thread, time, math
+#importando todos os gestos 
+from Leap import CircleGesture, ScreenTapGesture, SwipeGesture, KeyTapGesture
 
 
 class LeapMotionListener(Leap.Listener): 
@@ -37,7 +44,7 @@ class LeapMotionListener(Leap.Listener):
         
     def on_connect(self, controller):
         print 'Motion Sensor Conected!'
-        #abilitações dos possiveis gestos proprcionado pelo LeaMotion
+        #criação da detecção dos gestos que serão feitos
         controller.enable_gesture(Leap.Gesture.TYPE_CIRCLE); 
         controller.enable_gesture(Leap.Gesture.TYPE_KEY_TAP);
         controller.enable_gesture(Leap.Gesture.TYPE_SCREEN_TAP);
@@ -53,8 +60,7 @@ class LeapMotionListener(Leap.Listener):
     #parte mais importante
 
     def on_frame(self, controller):
-        frame = controller.frame() # atribuindo a variavel frame o retorno de informações dos ultimos qudros captadas pelo leap motion
-        #frame_penultimo_gesto = controller.frame(1) # atribuindo a variavel frame_penultimo_gesto o retorno de informações do penultimo gesto
+        frame = controller.frame() 
         
         '''print "Frame ID:  " + str(frame.id) \
             + "Timestamp: " + str(frame.timestramp) \
@@ -89,10 +95,10 @@ class LeapMotionListener(Leap.Listener):
 
             for gesture in frame.gestures():
                 #cada gesto tem seu ID criado
+            
                 if gesture.type == Leap.Gesture.TYPE_CIRCLE:
-                    circle= CircleGesture(gesture) 
-                    #instanciando o objeto da classe gesto circulo
-                    # aqui o movimento circular é o de rotacionar o dedo na frente do computador
+                    circle= CircleGesture(gesture) # aqui o movimento circular é o de rotacionar o dedo na frente do computador
+                    
                     if circle.pointable.direction.angle_to(circle.normal) <= Leap.PI/2:
                         clockwiseness= "clockwise" # indica que o circulo esta em sentido horario
                     else:
@@ -104,53 +110,93 @@ class LeapMotionListener(Leap.Listener):
                     if circle.state != Leap.Gesture.STATE_START:
                         previous = CircleGesture(controller.frame(1).gesture(circle.id)) #criando um novo frame ao escrever frame(1)
                         swept_angle = (circle.progress - previous.progress) * 2 * Leap.PI
-                    # imprime no console o tamanho do circulo que voê gesticula e o sentido horario ou anti-horario 
-                    caneta = turtle.Turtle()
-                    caneta.penup()
-                    caneta.setpos(0,-100)
-                    caneta.pendown()
-                    caneta.circle(circle.radius)
+                    # imprime no console o tamanho do circulo que voê gesticula 
+                        
                     print "Radius: " + str(circle.radius) + " " + clockwiseness
                     
                 if gesture.type == Leap.Gesture.TYPE_SWIPE:
-                        #instanciando o objeto da classe gesto swipe
+                
                         swipe = SwipeGesture(gesture)
-                        #instnciando o objet da classe gesto da direção do swipe
                         swipeDir = swipe.direction
-                        #criações das condições dos prints de acordo com as cordenadas estabelecidas pelo leap
-                        if (swipeDir.x > 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)): #se a posição da mão nas cordenas do leap for  x>0, o seja mão indo para a direita
-                            print 'Swiped right'     #(parte do and):também precisa priorisara leitura do movimento em x para facilitar a leitura do leap
-                        elif(swipeDir.x < 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)): #se a posiçao da mão nas coodernadas do Leap  x<0, ou seja, mão indo para esquerda
-                            print 'Swiped left'       #(parte do and):também precisa priorisara leitura do movimento em x para facilitar a leitura do leap 
-                        elif(swipeDir.y > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)): #se a posiçao da mão nas coodernadas do Leap  y>0, ou seja, mão indo para cima
-                            print 'Swiped up'        #(parte do and):também precisa priorisara leitura do movimento em y para facilitar a leitura do leap 
-                        elif(swipeDir.x > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)): #se a posiçao da mão nas coodernadas do Leap  x<0, ou seja, mão indo para baixo
-                            print 'Swiped down'      #(parte do and):também precisa priorisara leitura do movimento em y para facilitar a leitura do leap 
+                        
+                        if (swipeDir.x > 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)):
+                            print 'Swiped right'
+                        elif(swipeDir.x < 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)):
+                            print 'Swiped left'
+                        elif(swipeDir.y > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)):
+                            print 'Swiped up'
+                        elif(swipeDir.x > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)):
+                            print 'Swiped down'
 
-
-def  main():
+ 
+class MyApp(ShowBase):
     
-    window = turtle.Screen()
-    window.bgcolor("white")
-    window.title("Criador de Circulos")
-    listener = LeapMotionListener() #cria o objeto
-    controller = Leap.Controller() #cria o objeto / estabelece nossa conection com as duas duplas cameras do controlezinho    
-    controller.add_listener(listener) # fazendo o controle receber os eventos criado no listener
-        
-    print 'Press enter to quit'
-        
-    try:
-        sys.stdin.readline()
-    except KeyboardInterrupt:
-        pass
-    finally:
-        controller.remove_listener(listener)
+    def __init__(self):
+        ShowBase.__init__(self)
+        # codigo do Leap        
+        listener = LeapMotionListener() #cria o objeto
+        controller = Leap.Controller() #cria o objeto
+        controller.add_listener(listener)
+ 
+        # Disable the camera trackball controls.
+        self.disableMouse()
+ 
+        # Load the environment model.
+        self.environ = self.loader.loadModel("models/environment")
+        # Reparent the model to render.
+        self.environ.reparentTo(self.render)
+        # Apply scale and position transforms on the model.
+        self.environ.setScale(0.25, 0.25, 0.25)
+        self.environ.setPos(-8, 42, 0)
+ 
+        # Add the spinCameraTask procedure to the task manager.
+        #self.taskMgr.add(self.spinCameraTask, "SpinCameraTask")
+ 
+        # Load and transform the panda actor.
+        self.pandaActor = Actor("models/panda-model",
+                                {"walk": "models/panda-walk4"})
+        self.pandaActor.setScale(0.005, 0.005, 0.005)
+        self.pandaActor.reparentTo(self.render)
+        # Loop its animation.
+        self.pandaActor.loop("walk")
+ 
+        # Create the four lerp intervals needed for the panda to
+        # walk back and forth.
+        pandaPosInterval1 = self.pandaActor.posInterval(13,
+                                                        Point3(0, -10, 0),
+                                                        startPos=Point3(0, 10, 0))
+        pandaPosInterval2 = self.pandaActor.posInterval(13,
+                                                        Point3(0, 10, 0),
+                                                        startPos=Point3(0, -10, 0))
+        pandaHprInterval1 = self.pandaActor.hprInterval(3,
+                                                        Point3(180, 0, 0),
+                                                        startHpr=Point3(0, 0, 0))
+        pandaHprInterval2 = self.pandaActor.hprInterval(3,
+                                                        Point3(0, 0, 0),
+                                                        startHpr=Point3(180, 0, 0))
+ 
+        # Create and play the sequence that coordinates the intervals.
+        self.pandaPace = Sequence(pandaPosInterval1,
+                                  pandaHprInterval1,
+                                  pandaPosInterval2,
+                                  pandaHprInterval2,
+                                  name="pandaPace")
+        #self.pandaPace.loop()
+ 
+    # Define a procedure to move the camera.
+    def spinCameraTask(self, task):
+        angleDegrees = task.time * 6.0
+        angleRadians = angleDegrees * (pi / 180.0)
+        self.camera.setPos(20 * sin(angleRadians), -20.0 * cos(angleRadians), 3)
+        self.camera.setHpr(angleDegrees, 0, 0)
+        return Task.cont
+
+
+
 
 #------------------------------------------------------------------------------        
         
 if __name__=='__main__':
-    main()
+    app = MyApp()
+    app.run()
     
-    
-        
-        
