@@ -79,7 +79,7 @@ class LeapMotionListener(Leap.Listener):
                         previous = CircleGesture(controller.frame(1).gesture(circle.id)) #criando um novo frame ao escrever frame(1)
                         swept_angle = (circle.progress - previous.progress) * 2 * Leap.PI
                         # imprime no console o tamanho do circulo que voê gesticula e o sentido horario ou anti-horario 
-                        caneta.pensize(1)
+                        caneta.pensize(2)
                         caneta.circle(circle.radius)
                     print "Radius: " + str(circle.radius) + " " + clockwiseness
                     
@@ -109,16 +109,16 @@ class LeapMotionListener(Leap.Listener):
                             caneta.seth(270)
                             caneta.ht()
                             caneta.fd(10)
-                if gesture.type == Leap.Gesture.TYPE_KEY_TAP:
+                if gesture.type == Leap.Gesture.TYPE_KEY_TAP: #gesto de pinça 
                         key_tap = Leap.KeyTapGesture(gesture)
                         tap_point = key_tap.position
                         tapper = key_tap.pointable
                         caneta.pd()
-                        print('caneta baixada')
-                if gesture.type == Leap.Gesture.TYPE_SCREEN_TAP:       
+                        print('caneta down')
+                if gesture.type == Leap.Gesture.TYPE_SCREEN_TAP: #gesto de touch na tela    
                         screen_tap = Leap.ScreenTapGesture(gesture)
                         caneta.pu()
-                        print('caneta levantada')
+                        print('caneta up')
 def  main():
     
     window = turtle.Screen()
