@@ -9,6 +9,9 @@ import Leap, sys, thread, time, math # importando a biblioteca do leap
 from Leap import CircleGesture, ScreenTapGesture, SwipeGesture, KeyTapGesture #importando a biblioteca de gestos do leap
 import turtle # Usa a biblioteca de turtle graphics
 
+caneta = turtle.Turtle()
+caneta.setpos(0,0)
+caneta.penup()
 
 
 class LeapMotionListener(Leap.Listener): 
@@ -55,38 +58,9 @@ class LeapMotionListener(Leap.Listener):
     def on_frame(self, controller):
         frame = controller.frame() # atribuindo a variavel frame o retorno de informações dos ultimos qudros captadas pelo leap motion
         #frame_penultimo_gesto = controller.frame(1) # atribuindo a variavel frame_penultimo_gesto o retorno de informações do penultimo gesto
-        
-        '''print "Frame ID:  " + str(frame.id) \
-            + "Timestamp: " + str(frame.timestramp) \
-            + "# of Hands"  + str(len(frame.hands)) \
-            + "# of fingers" + str(len(frame.fingers)) \
-            + "# of Tools" + str(len(frame.tools)) \
-            + "# of Gestures " + str(len(frame.gestures()))'''
             
         for hand in frame.hands:
             
-            '''handType = 'Left Hand' if hand.is_left else 'Right Hand'
-            #para cada entrada com  a mão teremos um novo ID para cada ação
-            print handType + 'Hand ID:' + str(hand.id) + 'Palm Position: ' + str(hand.palm_position)
-            
-            normal = hand.palm_normal
-            direction = hand.direction
-            #criação de parte do campo dos tres eixos - Funcao Vector - Direction Vector
-            print "Pitch: " + str(direction.pitch*Leap.RAD_TO_DEG) + "Roll: " + str(normal.roll*Leap.RAD_TO_DEG) + "Yaw: " + str(direction.yaw*Leap.RAD_TO_DEG) #tranformção em graus
-            #leitura do braço
-            arm = hand.arm
-            print "Arm Direction: " + str(arm.direction) + " Wrist Position: " + str(arm.wrist_position) + " Elbow Position: " +str(arm.elbow_position)'''
-            
-            '''for finger in hand.fingers:
-                print "Type: " + self.finger_names[finger.type()] + "ID: " + str(finger.id) + " Lenght (mm): " + str(finger.length) + "Width (mm): " + str(finger.width)
-               
-                for b in range(0,4): 
-                    bone = finger.bone(b)
-                    print "Bone: " + self.bone_names[bone.type] + " Start: " + str(bone.prev_joint) + "End: " + str(bone.next_joint) + "Direction: " + str(bone.direction)'''
-            
-            '''for tool in frame.tools:
-                print " Tool ID: " + str(tool.id) + " Tip Position: " + str(tool.tip_position) + "Direction: " + str(tool.direction)'''
-
             for gesture in frame.gestures():
                 #cada gesto tem seu ID criado
                 if gesture.type == Leap.Gesture.TYPE_CIRCLE:
@@ -104,12 +78,9 @@ class LeapMotionListener(Leap.Listener):
                     if circle.state != Leap.Gesture.STATE_START:
                         previous = CircleGesture(controller.frame(1).gesture(circle.id)) #criando um novo frame ao escrever frame(1)
                         swept_angle = (circle.progress - previous.progress) * 2 * Leap.PI
-                    # imprime no console o tamanho do circulo que voê gesticula e o sentido horario ou anti-horario 
-                    caneta = turtle.Turtle()
-                    caneta.penup()
-                    caneta.setpos(0,-100)
-                    caneta.pendown()
-                    caneta.circle(circle.radius)
+                        # imprime no console o tamanho do circulo que voê gesticula e o sentido horario ou anti-horario 
+                        caneta.pensize(1)
+                        caneta.circle(circle.radius)
                     print "Radius: " + str(circle.radius) + " " + clockwiseness
                     
                 if gesture.type == Leap.Gesture.TYPE_SWIPE:
@@ -120,14 +91,34 @@ class LeapMotionListener(Leap.Listener):
                         #criações das condições dos prints de acordo com as cordenadas estabelecidas pelo leap
                         if (swipeDir.x > 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)): #se a posição da mão nas cordenas do leap for  x>0, o seja mão indo para a direita
                             print 'Swiped right'     #(parte do and):também precisa priorisara leitura do movimento em x para facilitar a leitura do leap
+                            caneta.seth(0)
+                            caneta.ht()
+                            caneta.fd(10)
                         elif(swipeDir.x < 0 and math.fabs(swipeDir.x) > math.fabs(swipeDir.y)): #se a posiçao da mão nas coodernadas do Leap  x<0, ou seja, mão indo para esquerda
-                            print 'Swiped left'       #(parte do and):também precisa priorisara leitura do movimento em x para facilitar a leitura do leap 
+                            print 'Swiped left'       #(parte do and):também precisa priorisara leitura do movimento em x para facilitar a leitura do leap
+                            caneta.seth(180)
+                            caneta.ht()
+                            caneta.fd(10)
                         elif(swipeDir.y > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)): #se a posiçao da mão nas coodernadas do Leap  y>0, ou seja, mão indo para cima
                             print 'Swiped up'        #(parte do and):também precisa priorisara leitura do movimento em y para facilitar a leitura do leap 
+                            caneta.seth(90)
+                            caneta.ht()
+                            caneta.fd(10)
                         elif(swipeDir.x > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)): #se a posiçao da mão nas coodernadas do Leap  x<0, ou seja, mão indo para baixo
                             print 'Swiped down'      #(parte do and):também precisa priorisara leitura do movimento em y para facilitar a leitura do leap 
-
-
+                            caneta.seth(270)
+                            caneta.ht()
+                            caneta.fd(10)
+                if gesture.type == Leap.Gesture.TYPE_KEY_TAP:
+                        key_tap = Leap.KeyTapGesture(gesture)
+                        tap_point = key_tap.position
+                        tapper = key_tap.pointable
+                        caneta.pd()
+                        print('caneta baixada')
+                if gesture.type == Leap.Gesture.TYPE_SCREEN_TAP:       
+                        screen_tap = Leap.ScreenTapGesture(gesture)
+                        caneta.pu()
+                        print('caneta levantada')
 def  main():
     
     window = turtle.Screen()
@@ -149,8 +140,54 @@ def  main():
 #------------------------------------------------------------------------------        
         
 if __name__=='__main__':
-    main()
-    
+    window = turtle.Screen()
+    window.bgcolor("white")
+    window.title("Criador de Circulos")
+    listener = LeapMotionListener() #cria o objeto
+    controller = Leap.Controller() #cria o objeto / estabelece nossa conection com as duas duplas cameras do controlezinho    
+    controller.add_listener(listener) # fazendo o controle receber os eventos criado no listener
+        
+    print 'Press enter to quit'
+        
+    try:
+        sys.stdin.readline()
+    except KeyboardInterrupt:
+        pass
+    finally:
+        controller.remove_listener(listener)
+        
+
+  
     
         
         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
