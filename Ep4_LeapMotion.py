@@ -40,7 +40,7 @@ class LeapMotionListener(Leap.Listener):
         
     def on_connect(self, controller):
         print 'Motion Sensor Conected!'
-        #abilitações dos possiveis gestos proprcionado pelo LeaMotion
+        #habilitações dos possiveis gestos proprcionado pelo LeaMotion
         controller.enable_gesture(Leap.Gesture.TYPE_CIRCLE); 
         controller.enable_gesture(Leap.Gesture.TYPE_KEY_TAP);
         controller.enable_gesture(Leap.Gesture.TYPE_SCREEN_TAP);
@@ -104,7 +104,7 @@ class LeapMotionListener(Leap.Listener):
                             caneta.seth(90)
                             caneta.ht()
                             caneta.fd(10)
-                        elif(swipeDir.x > 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)): #se a posiçao da mão nas coodernadas do Leap  x<0, ou seja, mão indo para baixo
+                        elif(swipeDir.y < 0 and math.fabs(swipeDir.x) < math.fabs(swipeDir.y)): #se a posiçao da mão nas coodernadas do Leap  x<0, ou seja, mão indo para baixo
                             print 'Swiped down'      #(parte do and):também precisa priorisara leitura do movimento em y para facilitar a leitura do leap 
                             caneta.seth(270)
                             caneta.ht()
@@ -123,7 +123,7 @@ def  main():
     
     window = turtle.Screen()
     window.bgcolor("white")
-    window.title("Criador de Circulos")
+    window.title("Dextra Magus")
     listener = LeapMotionListener() #cria o objeto
     controller = Leap.Controller() #cria o objeto / estabelece nossa conection com as duas duplas cameras do controlezinho    
     controller.add_listener(listener) # fazendo o controle receber os eventos criado no listener
@@ -142,7 +142,7 @@ def  main():
 if __name__=='__main__':
     window = turtle.Screen()
     window.bgcolor("white")
-    window.title("Criador de Circulos")
+    window.title("Dextra Magus ")
     listener = LeapMotionListener() #cria o objeto
     controller = Leap.Controller() #cria o objeto / estabelece nossa conection com as duas duplas cameras do controlezinho    
     controller.add_listener(listener) # fazendo o controle receber os eventos criado no listener
